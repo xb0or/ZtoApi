@@ -1538,8 +1538,8 @@ func handleStreamResponseWithIDs(w http.ResponseWriter, upstreamReq UpstreamRequ
 			s = strings.ReplaceAll(s, "</details>", "")
 		}
 		// 处理每行前缀 "> "（包括起始位置）
-		s = strings.TrimPrefix(s, "> ")
-		s = strings.ReplaceAll(s, "\n> ", "\n")
+		// s = strings.TrimPrefix(s, "> ")
+		// s = strings.ReplaceAll(s, "\n> ", "\n")
 		return strings.TrimSpace(s)
 	}
 
