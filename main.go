@@ -58,7 +58,7 @@ var (
 
 // 思考内容处理策略
 const (
-	THINK_TAGS_MODE = "strip" // strip: 去除<details>标签；think: 转为<think>标签；raw: 保留原样
+	THINK_TAGS_MODE = "raw" // strip: 去除<details>标签；think: 转为<think>标签；raw: 保留原样
 )
 
 // 伪装前端头部（来自抓包）
@@ -1522,6 +1522,9 @@ func handleStreamResponseWithIDs(w http.ResponseWriter, upstreamReq UpstreamRequ
 
 	// 用于策略2：总是展示thinking（配合标签处理）
 	transformThinking := func(s string) string {
+		if THINK_TAGS_MODE == "raw" {
+			return s
+		}
 		// 去 <summary>…</summary>
 		s = regexp.MustCompile(`(?s)<summary>.*?</summary>`).ReplaceAllString(s, "")
 		// 清理残留自定义标签，如 </thinking>、<Full> 等
@@ -1537,9 +1540,6 @@ func handleStreamResponseWithIDs(w http.ResponseWriter, upstreamReq UpstreamRequ
 			s = regexp.MustCompile(`<details[^>]*>`).ReplaceAllString(s, "")
 			s = strings.ReplaceAll(s, "</details>", "")
 		}
-		// 处理每行前缀 "> "（包括起始位置）
-		// s = strings.TrimPrefix(s, "> ")
-		// s = strings.ReplaceAll(s, "\n> ", "\n")
 		return strings.TrimSpace(s)
 	}
 
